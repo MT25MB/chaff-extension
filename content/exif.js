@@ -22,6 +22,7 @@
       img.src = url;
     }
     function toast(msg) {
+      if (!document.body) return;
       const t = document.createElement('div');
       t.textContent = msg;
       Object.assign(t.style,{position:'fixed',bottom:'20px',right:'20px',zIndex:'2147483647',
