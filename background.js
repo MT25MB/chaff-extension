@@ -47,7 +47,10 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 chrome.runtime.onMessage.addListener((msg, sender, reply) => {
   if (msg.type === 'GET_STATS') { chrome.storage.local.get(['statsNoise'], reply); return true; }
   if (msg.type === 'SET') {
-    chrome.storage.local.set({ [msg.key]: msg.val });
-    if (['noiseEnabled','noiseIntensity'].includes(msg.key)) scheduleNoise();
+    const validKeys = ['shieldEnabled','fingerprintEnabled','noiseEnabled','exifEnabled','noiseIntensity'];
+    if (validKeys.includes(msg.key)) {
+      chrome.storage.local.set({ [msg.key]: msg.val });
+      if (['noiseEnabled','noiseIntensity'].includes(msg.key)) scheduleNoise();
+    }
   }
 });
