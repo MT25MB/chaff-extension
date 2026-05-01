@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="popup.css">
+<title>CHAFF</title>
+</head>
+<body>
+<div class="header">
+  <div class="logo">⚡ CHAFF</div>
+  <div class="tagline" id="tagline">Shield Active</div>
+  <label class="toggle"><input type="checkbox" id="master"><span class="sl"></span></label>
+</div>
+<div class="stat-row">
+  <div class="stat"><div class="num" id="sNoise">0</div><div class="lbl">Noise Requests Sent</div></div>
+  <div class="stat"><div class="num" id="sKey">—</div><div class="lbl">Session ID</div></div>
+</div>
+<div class="sec">MODULES</div>
+<div class="row">
+  <div class="info"><b>🎭 Fingerprint Randomization</b><br><span>Canvas, WebGL, Audio, Hardware</span></div>
+  <label class="mt"><input type="checkbox" id="fp"><span class="ms"></span></label>
+</div>
+<div class="row">
+  <div class="info"><b>🌐 Noise Browsing</b><br><span>Silent decoy page visits</span></div>
+  <label class="mt"><input type="checkbox" id="noise"><span class="ms"></span></label>
+</div>
+<div class="row">
+  <div class="info"><b>📷 EXIF Photo Stripping</b><br><span>Remove GPS from uploads</span></div>
+  <label class="mt"><input type="checkbox" id="exif"><span class="ms"></span></label>
+</div>
+<div class="sec">NOISE INTENSITY</div>
+<div class="sl-row">
+  <span class="sl-lbl">Low</span>
+  <input type="range" id="intensity" min="1" max="5" step="1">
+  <span class="sl-lbl">High</span>
+</div>
+<div class="il" id="ilabel">2 decoy visits / hour</div>
+<div class="footer">
+  <a href="https://github.com/MT25MB/chaff-extension" target="_blank">GitHub</a> ·
+  <a href="https://youtube.com/@DownwithBigBrother" target="_blank">YouTube</a> ·
+  <span>v1.0.0</span>
+</div>
+<script src="popup.js"></script>
+</body>
+</html>

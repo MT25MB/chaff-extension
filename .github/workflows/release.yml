@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Zip extension
+        run: |
+          zip -r chaff-extension-${{ github.ref_name }}.zip . \
+            --exclude ".git/*" \
+            --exclude ".github/*" \
+            --exclude "*.md" \
+            --exclude "node_modules/*"
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: chaff-extension-${{ github.ref_name }}.zip
+          body: |
+            ## CHAFF Privacy Shield ${{ github.ref_name }}
+            
+            ### Install
+            1. Download `chaff-extension-${{ github.ref_name }}.zip`
+            2. Unzip it
+            3. Firefox: `about:debugging` → Load Temporary Add-on → select `manifest.json`
+            4. Chrome: `chrome://extensions` → Developer Mode → Load Unpacked
+            
+            ### What's New
+            See commit history for changes.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

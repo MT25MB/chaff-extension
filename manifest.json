@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "CHAFF Privacy Shield",
+  "version": "1.0.0",
+  "description": "Cooperative privacy noise generation. Protect your digital footprint. Down with Big Brother.",
+  "author": "Project CHAFF — github.com/MT25MB/chaff-extension",
+  "permissions": ["storage","scripting","alarms","webNavigation"],
+  "host_permissions": ["<all_urls>"],
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["content/fingerprint.js","content/exif.js"],
+    "run_at": "document_start",
+    "all_frames": true
+  }],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "CHAFF Privacy Shield"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "chaff@privacyproject.is",
+      "strict_min_version": "109.0"
+    }
+  }
+}
