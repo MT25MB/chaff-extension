@@ -20,7 +20,13 @@ const DEFAULTS = {
 
 chrome.runtime.onInstalled.addListener(async () => {
   const s = await chrome.storage.local.get(null);
-  if (s.shieldEnabled === undefined) await chrome.storage.local.set(DEFAULTS);
+  if (s.shieldEnabled === undefined) {
+    await chrome.storage.local.set(DEFAULTS);
+  } else {
+    for (const [k, v] of Object.entries(DEFAULTS)) {
+      if (s[k] === undefined) await chrome.storage.local.set({ [k]: v });
+    }
+  }
   scheduleNoise();
   console.log('[CHAFF] Shield activated. The sky fills with noise.');
 });
@@ -33,7 +39,7 @@ function scheduleNoise() {
 chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name !== 'noise') return;
   const s = await chrome.storage.local.get(['shieldEnabled','noiseEnabled','noiseIntensity','statsNoise']);
-  if (!s.shieldEnabled || !s.noiseEnabled) return;
+  if (s.shieldEnabled === false || s.noiseEnabled === false) return;
   const count = s.noiseIntensity || 2;
   for (let i = 0; i < count; i++) {
     const url = NOISE_SITES[Math.floor(Math.random() * NOISE_SITES.length)];
