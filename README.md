@@ -1,10 +1,10 @@
-# ⚡ CHAFF Privacy Shield
+# ⚡ CHAFF
 
 > *Because the best defense against radar is to fill the sky with noise.*
 
 A browser extension that defeats mass surveillance profiling by randomizing your digital fingerprint and flooding surveillance systems with decoy browsing noise.
 
-**By [Down with Big Brother](https://youtube.com/@DownwithBigBrother) · [github.com/MT25MB/chaff-extension](https://github.com/MT25MB/chaff-extension)**
+[github.com/MT25MB/chaff-extension](https://github.com/MT25MB/chaff-extension)**
 
 ---
 
