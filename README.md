@@ -39,10 +39,6 @@ A browser extension that defeats mass surveillance profiling by randomizing your
 - **100% open source.** Read every line of code.
 - **No login required.** Install and it works immediately.
 
-## 📺 Learn More
-
-[Down with Big Brother](https://youtube.com/@DownwithBigBrother) covers how surveillance systems work and how to fight back — legally, technically, effectively.
-
 ## 🌍 Part of Project CHAFF
 
 This extension is Phase 1 of a larger open-source privacy infrastructure project. [Read the full architecture](ARCHITECTURE.md).
