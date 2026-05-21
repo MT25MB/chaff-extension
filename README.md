@@ -1,5 +1,5 @@
 # ⚡ CHAFF
-
+https://chaff-privacy.dwbb.workers.dev/
 > *Because the best defense against radar is to fill the sky with noise.*
 
 A browser extension that defeats mass surveillance profiling by randomizing your digital fingerprint and flooding surveillance systems with decoy browsing noise.
