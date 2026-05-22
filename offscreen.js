@@ -47,6 +47,7 @@ function loadInIframe(url) {
       try { iframe.remove(); } catch(e) {}
     };
 
+    if (!document.body) return;
     document.body.appendChild(iframe);
 
   } catch(e) {
