@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Cooperative privacy noise generation. Protect your digital footprint. Down with Big Brother.",
   "author": "Project CHAFF — github.com/MT25MB/chaff-extension",
-  "permissions": ["storage","scripting","alarms","webNavigation"],
+  "permissions": ["storage","scripting","alarms","webNavigation","offscreen"],
   "host_permissions": ["<all_urls>"],
   "background": { "service_worker": "background.js" },
   "content_scripts": [{
@@ -22,5 +22,9 @@
       "id": "chaff@privacyproject.is",
       "strict_min_version": "109.0"
     }
-  }
+  },
+  "web_accessible_resources": [{
+    "resources": ["offscreen.html"],
+    "matches": ["<all_urls>"]
+  }]
 }

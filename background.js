@@ -36,18 +36,57 @@ function scheduleNoise() {
   chrome.alarms.create('noise', { delayInMinutes: 5, periodInMinutes: 20 + Math.random() * 20 });
 }
 
+// Track whether offscreen document exists
+let offscreenCreated = false;
+
+async function ensureOffscreen() {
+  if (offscreenCreated) return;
+  try {
+    await chrome.offscreen.createDocument({
+      url: chrome.runtime.getURL('offscreen.html'),
+      reasons: ['IFRAME_SCRIPTING'],
+      justification: 'Load noise pages in hidden iframes to generate decoy tracking signals'
+    });
+    offscreenCreated = true;
+  } catch(e) {
+    // Document may already exist
+    offscreenCreated = true;
+  }
+}
+
 chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name !== 'noise') return;
   const s = await chrome.storage.local.get(['shieldEnabled','noiseEnabled','noiseIntensity','statsNoise']);
-  if (s.shieldEnabled === false || s.noiseEnabled === false) return;
+  if (!s.shieldEnabled || !s.noiseEnabled) return;
+
   const count = s.noiseIntensity || 2;
+  const selected = [];
   for (let i = 0; i < count; i++) {
-    const url = NOISE_SITES[Math.floor(Math.random() * NOISE_SITES.length)];
-    try {
-      await fetch(url, { method:'GET', headers:{'Accept':'text/html','Cache-Control':'no-cache'}, signal: AbortSignal.timeout(5000) });
-    } catch(e) {}
+    selected.push(NOISE_SITES[Math.floor(Math.random() * NOISE_SITES.length)]);
   }
-  await chrome.storage.local.set({ statsNoise: (s.statsNoise || 0) + count });
+
+  try {
+    await ensureOffscreen();
+    chrome.runtime.sendMessage({ type: 'LOAD_NOISE', urls: selected });
+  } catch(e) {
+    // Offscreen not supported (Firefox) — fall back to fetch
+    for (const url of selected) {
+      try {
+        await fetch(url, { signal: AbortSignal.timeout(5000) });
+      } catch(e) {}
+    }
+  }
+
+  const now = Date.now();
+  await chrome.storage.local.set({
+    statsNoise: (s.statsNoise || 0) + count,
+    lastNoiseTime: now
+  });
+});
+
+// Clean up offscreen document when not needed
+chrome.runtime.onSuspend.addListener(() => {
+  offscreenCreated = false;
 });
 
 chrome.runtime.onMessage.addListener((msg, sender, reply) => {

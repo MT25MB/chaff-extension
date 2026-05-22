@@ -21,6 +21,7 @@
     // Canvas
     const origToDataURL = HTMLCanvasElement.prototype.toDataURL;
     const origGetImgData = CanvasRenderingContext2D.prototype.getImageData;
+    const origToBlob = HTMLCanvasElement.prototype.toBlob;
     function noiseCanvas(canvas) {
       const ctx = canvas.getContext('2d');
       if (!ctx || !canvas.width || !canvas.height) return;
@@ -36,6 +37,10 @@
       } catch(e) {}
     }
     HTMLCanvasElement.prototype.toDataURL = function(...a) { noiseCanvas(this); return origToDataURL.apply(this,a); };
+    HTMLCanvasElement.prototype.toBlob = function(cb, ...a) {
+        noiseCanvas(this);
+        return origToBlob.call(this, cb, ...a);
+    };
     CanvasRenderingContext2D.prototype.getImageData = function(...a) {
       const d = origGetImgData.apply(this,a);
       const n = h('gid')*4;
