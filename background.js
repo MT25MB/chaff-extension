@@ -12,10 +12,27 @@ const NOISE_SITES = [
   "https://www.merriam-webster.com","https://www.consumerreports.org","https://www.gutenberg.org"
 ];
 
+const TRACKING_PARAMS = [
+  'utm_source','utm_medium','utm_campaign','utm_term','utm_content',
+  'fbclid','gclid','gclsrc','dclid','gbraid','wbraid',
+  'mc_cid','mc_eid',
+  '_hsenc','_hsmi','hsCtaTracking',
+  'msclkid','twclid',
+  'oly_enc_id','oly_anon_id',
+  '_openstat','vero_id','wickedid',
+  'yclid','mkt_tok',
+  '__s','_ga','_gl','li_fat_id',
+  'tt_medium','tt_content','tag','source'
+];
+
 const DEFAULTS = {
   shieldEnabled: true, fingerprintEnabled: true,
   noiseEnabled: true, exifEnabled: true,
-  noiseIntensity: 2, statsNoise: 0
+  noiseIntensity: 2, statsNoise: 0,
+  fingerprintExtraEnabled: true,
+  headersProtectionEnabled: true,
+  autoClearEnabled: false,
+  stripTrackingParams: true
 };
 
 chrome.runtime.onInstalled.addListener(async () => {
@@ -36,7 +53,7 @@ function scheduleNoise() {
   chrome.alarms.create('noise', { delayInMinutes: 5, periodInMinutes: 20 + Math.random() * 20 });
 }
 
-// Track whether offscreen document exists
+// --- Offscreen Document ---
 let offscreenCreated = false;
 
 async function ensureOffscreen() {
@@ -49,11 +66,11 @@ async function ensureOffscreen() {
     });
     offscreenCreated = true;
   } catch(e) {
-    // Document may already exist
     offscreenCreated = true;
   }
 }
 
+// --- Noise Generation ---
 chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name !== 'noise') return;
   const s = await chrome.storage.local.get(['shieldEnabled','noiseEnabled','noiseIntensity','statsNoise']);
@@ -69,7 +86,6 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     await ensureOffscreen();
     chrome.runtime.sendMessage({ type: 'LOAD_NOISE', urls: selected });
   } catch(e) {
-    // Offscreen not supported (Firefox) — fall back to fetch
     for (const url of selected) {
       try {
         await fetch(url, { signal: AbortSignal.timeout(5000) });
@@ -84,15 +100,60 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   });
 });
 
-// Clean up offscreen document when not needed
 chrome.runtime.onSuspend.addListener(() => {
   offscreenCreated = false;
 });
 
+// --- URL Tracking Parameter Stripping ---
+chrome.webNavigation.onBeforeNavigate.addListener(async (details) => {
+  if (details.frameId !== 0) return;
+  const s = await chrome.storage.local.get(['stripTrackingParams']);
+  if (s.stripTrackingParams === false) return;
+
+  try {
+    const url = new URL(details.url);
+    let changed = false;
+    for (const param of TRACKING_PARAMS) {
+      if (url.searchParams.has(param)) {
+        url.searchParams.delete(param);
+        changed = true;
+      }
+    }
+    if (changed) {
+      chrome.tabs.update(details.tabId, { url: url.toString() });
+    }
+  } catch(e) {}
+});
+
+// --- Auto-Clear Storage on Tab Close ---
+chrome.tabs.onRemoved.addListener(async (tabId, removeInfo) => {
+  const s = await chrome.storage.local.get(['shieldEnabled','autoClearEnabled']);
+  if (s.shieldEnabled === false || s.autoClearEnabled === false) return;
+
+  try {
+    if (chrome.browsingData) {
+      chrome.browsingData.remove({
+        originTypes: { unprotected_web: true },
+        since: Date.now() - 86400000
+      }, {
+        cookies: true,
+        localStorage: true,
+        sessionStorage: true,
+        indexedDB: true,
+        cache: true
+      });
+    }
+  } catch(e) {}
+});
+
+// --- Message Handler ---
 chrome.runtime.onMessage.addListener((msg, sender, reply) => {
   if (msg.type === 'GET_STATS') { chrome.storage.local.get(['statsNoise'], reply); return true; }
   if (msg.type === 'SET') {
-    const validKeys = ['shieldEnabled','fingerprintEnabled','noiseEnabled','exifEnabled','noiseIntensity'];
+    const validKeys = [
+      'shieldEnabled','fingerprintEnabled','noiseEnabled','exifEnabled','noiseIntensity',
+      'fingerprintExtraEnabled','headersProtectionEnabled','autoClearEnabled','stripTrackingParams'
+    ];
     if (validKeys.includes(msg.key)) {
       chrome.storage.local.set({ [msg.key]: msg.val });
       if (['noiseEnabled','noiseIntensity'].includes(msg.key)) scheduleNoise();

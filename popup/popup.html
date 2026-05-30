@@ -15,18 +15,37 @@
   <div class="stat"><div class="num" id="sNoise">0</div><div class="lbl">Noise Requests Sent</div></div>
   <div class="stat"><div class="num" id="sKey">—</div><div class="lbl">Last Noise Sent</div></div>
 </div>
-<div class="sec">MODULES</div>
+<div class="sec">FINGERPRINT PROTECTION</div>
 <div class="row">
-  <div class="info"><b>🎭 Fingerprint Randomization</b><br><span>Canvas, WebGL, Audio, Hardware</span></div>
+  <div class="info"><b>🎭 Canvas & WebGL</b><br><span>Canvas noise, WebGL renderer spoof</span></div>
   <label class="mt"><input type="checkbox" id="fp"><span class="ms"></span></label>
 </div>
+<div class="row">
+  <div class="info"><b>🔊 Audio & Device</b><br><span>AudioContext noise, timezone, language</span></div>
+  <label class="mt"><input type="checkbox" id="fpExtra"><span class="ms"></span></label>
+</div>
+<div class="sec">NOISE & TRACKING</div>
 <div class="row">
   <div class="info"><b>🌐 Noise Browsing</b><br><span>Silent decoy page visits</span></div>
   <label class="mt"><input type="checkbox" id="noise"><span class="ms"></span></label>
 </div>
 <div class="row">
+  <div class="info"><b>🔗 Strip Tracking URLs</b><br><span>Remove utm_*, fbclid, gclid, etc.</span></div>
+  <label class="mt"><input type="checkbox" id="stripParams"><span class="ms"></span></label>
+</div>
+<div class="sec">NETWORK PROTECTION</div>
+<div class="row">
+  <div class="info"><b>📡 Header Protection</b><br><span>DNT signal, Client Hints block</span></div>
+  <label class="mt"><input type="checkbox" id="headers"><span class="ms"></span></label>
+</div>
+<div class="row">
   <div class="info"><b>📷 EXIF Photo Stripping</b><br><span>Remove GPS from uploads</span></div>
   <label class="mt"><input type="checkbox" id="exif"><span class="ms"></span></label>
+</div>
+<div class="sec">STORAGE & PRIVACY</div>
+<div class="row">
+  <div class="info"><b>🧹 Auto-Clear Storage</b><br><span>Clear cookies & storage on tab close</span></div>
+  <label class="mt"><input type="checkbox" id="autoClear"><span class="ms"></span></label>
 </div>
 <div class="sec">NOISE INTENSITY</div>
 <div class="sl-row">
@@ -38,7 +57,7 @@
 <div class="footer">
   <a href="https://github.com/MT25MB/chaff-extension" target="_blank">GitHub</a> ·
   <a href="https://youtube.com/@DownwithBigBrother" target="_blank">YouTube</a> ·
-  <span>v1.0.0</span>
+  <span>v1.1.0</span>
 </div>
 <script src="popup.js"></script>
 </body>

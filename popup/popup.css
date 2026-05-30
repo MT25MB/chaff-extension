@@ -1,5 +1,5 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { width: 300px; font-family: 'Segoe UI', system-ui, sans-serif; background: #0a0a0f; color: #e0e0e0; font-size: 13px; }
+body { width: 300px; max-height: 500px; overflow-y: auto; font-family: 'Segoe UI', system-ui, sans-serif; background: #0a0a0f; color: #e0e0e0; font-size: 13px; }
 .header { display: flex; align-items: center; gap: 8px; padding: 14px 16px 12px; background: #0f0f1a; border-bottom: 1px solid #1e1e2e; }
 .logo { font-size: 1rem; font-weight: 800; color: #4ade80; letter-spacing: .1em; }
 .tagline { flex: 1; font-size: .72rem; color: #4ade80; }

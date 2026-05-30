@@ -2,12 +2,19 @@ const $ = id => document.getElementById(id);
 const labels = {1:'1 decoy visit / hour',2:'2 decoy visits / hour',3:'4 decoy visits / hour',4:'6 decoy visits / hour',5:'10 decoy visits / hour'};
 
 async function init() {
-  const s = await chrome.storage.local.get(['shieldEnabled','fingerprintEnabled','noiseEnabled','exifEnabled','noiseIntensity','statsNoise']);
-  $('master').checked  = s.shieldEnabled !== false;
-  $('fp').checked      = s.fingerprintEnabled !== false;
-  $('noise').checked   = s.noiseEnabled !== false;
-  $('exif').checked    = s.exifEnabled !== false;
-  $('intensity').value = s.noiseIntensity || 2;
+  const s = await chrome.storage.local.get([
+    'shieldEnabled','fingerprintEnabled','noiseEnabled','exifEnabled','noiseIntensity','statsNoise',
+    'fingerprintExtraEnabled','headersProtectionEnabled','autoClearEnabled','stripTrackingParams'
+  ]);
+  $('master').checked     = s.shieldEnabled !== false;
+  $('fp').checked         = s.fingerprintEnabled !== false;
+  $('fpExtra').checked    = s.fingerprintExtraEnabled !== false;
+  $('noise').checked      = s.noiseEnabled !== false;
+  $('stripParams').checked = s.stripTrackingParams !== false;
+  $('headers').checked    = s.headersProtectionEnabled !== false;
+  $('exif').checked       = s.exifEnabled !== false;
+  $('autoClear').checked  = s.autoClearEnabled === true;
+  $('intensity').value    = s.noiseIntensity || 2;
   $('sNoise').textContent = (s.statsNoise || 0).toLocaleString();
   $('ilabel').textContent = labels[s.noiseIntensity || 2];
   const stored = await chrome.storage.local.get(['lastNoiseTime']);
@@ -28,7 +35,11 @@ function set(key,val) { chrome.runtime.sendMessage({type:'SET',key,val}); }
 
 $('master').addEventListener('change', e => { set('shieldEnabled',e.target.checked); updateState(e.target.checked); });
 $('fp').addEventListener('change', e => set('fingerprintEnabled',e.target.checked));
+$('fpExtra').addEventListener('change', e => set('fingerprintExtraEnabled',e.target.checked));
 $('noise').addEventListener('change', e => set('noiseEnabled',e.target.checked));
+$('stripParams').addEventListener('change', e => set('stripTrackingParams',e.target.checked));
+$('headers').addEventListener('change', e => set('headersProtectionEnabled',e.target.checked));
 $('exif').addEventListener('change', e => set('exifEnabled',e.target.checked));
+$('autoClear').addEventListener('change', e => set('autoClearEnabled',e.target.checked));
 $('intensity').addEventListener('input', e => { const v=parseInt(e.target.value); $('ilabel').textContent=labels[v]; set('noiseIntensity',v); });
 init();
