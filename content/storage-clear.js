@@ -4,11 +4,6 @@
   chrome.storage.local.get(['shieldEnabled','autoClearEnabled'], function(s) {
     if (s.shieldEnabled === false || s.autoClearEnabled === false) return;
 
-    // Notify background this tab is active (for cleanup tracking)
-    try {
-      chrome.runtime.sendMessage({ type: 'TAB_ACTIVE', url: location.href });
-    } catch(e) {}
-
     // Clear sessionStorage on unload (last defense)
     window.addEventListener('beforeunload', function() {
       try { sessionStorage.clear(); } catch(e) {}

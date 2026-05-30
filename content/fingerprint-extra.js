@@ -99,7 +99,6 @@
 
     if (navigator.geolocation) {
       const origGetCurrentPosition = navigator.geolocation.getCurrentPosition.bind(navigator.geolocation);
-      const origWatchPosition = navigator.geolocation.watchPosition.bind(navigator.geolocation);
 
       navigator.geolocation.getCurrentPosition = function(success, error, options) {
         const jitterLat = fakeLoc.lat + (Math.random() - 0.5) * 0.01;

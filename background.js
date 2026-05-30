@@ -22,7 +22,7 @@ const TRACKING_PARAMS = [
   '_openstat','vero_id','wickedid',
   'yclid','mkt_tok',
   '__s','_ga','_gl','li_fat_id',
-  'tt_medium','tt_content','tag','source'
+  'tt_medium','tt_content'
 ];
 
 const DEFAULTS = {
